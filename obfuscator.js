@@ -14,8 +14,22 @@
  */
 
 module.exports = function(data) {
+	midObj = counts(data);
 
-	return counts(data);
+	// Промежуточный массив для сортировки
+	var midArr = [];
+	for (var key in midObj) {
+		midArr.push({'class': key, 'count': midObj[key]});
+	}
+
+	// Самые часто встречающиеся классы - наверх
+	midArr.sort(function (a, b) {
+		return b.count - a.count;
+	});
+	for (var i = 0; i < midArr.length; i++) {
+		midObj[midArr[i].class] = generateNewName(i);
+	}
+	return midObj;
 };
 
 module.exports.counts = counts;
@@ -39,3 +53,14 @@ function counts(data) {
 
 	return result;
 };
+
+/**
+ * Преобразует число в обфусцированное имя
+ *
+ * @param {number} i – исходное число
+ * @return {string} — обфусцированное имя.
+ *
+ */
+function generateNewName(i) {
+	return 'a'
+}
