@@ -38,7 +38,7 @@ describe ('Тест промежуточного объекта', function () {
 /**
  *  Здесь мы тестируем основную функцию obfuscator:
  *  - Возвращает объект
- *  // todo: - список ключей соответствует исходному массиву
+ *  - список ключей соответствует исходному массиву
  *  // todo: - для самых частых ключей длина минимальна
  *  // todo: - по мере увеличения частоты вхождений длина обфусцированного класса не увеличивается
  *  // todo: - ни один обфусцированный класс не начинается с символа, отличного от латинской буквы
@@ -47,7 +47,18 @@ describe ('Тест основного функционала', function () {
 	it ('Пустое', function (done) {
 		assert.deepEqual(obfuscator([]), {});
 		done();
-	})
+	});
+	
+	it ('список ключей соответствует исходному массиву', function (done) {
+		// Минимальное тестирование функции проверки
+		assert.equal(eachKeyExistsInObj([], obfuscator([])), true);
+		assert.equal(eachKeyExistsInObj(['asdasdfasd'], obfuscator(['ddfghdfgh'])), false);
+
+		assert.equal(eachKeyExistsInObj(testData1, obfuscator(testData1)), true);
+		assert.equal(eachKeyExistsInObj(testData2, obfuscator(testData2)), true);
+		assert.equal(eachKeyExistsInObj(testData0, obfuscator(testData0)), true);
+		done();
+	});
 });
 
 function objSumm(obj) {
@@ -56,4 +67,11 @@ function objSumm(obj) {
 		result += obj[key];
 	};
 	return result;
+}
+
+function eachKeyExistsInObj(keys, obj) {
+	for (var i = 0; i < keys.length; i++) {
+		if (obj[keys[i]] === undefined) return false;
+	}
+	return true;
 }
