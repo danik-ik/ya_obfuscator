@@ -62,5 +62,5 @@ function counts(data) {
  *
  */
 function generateNewName(i) {
-	return 'a'
+	return i.toString();
 }
