@@ -9,6 +9,8 @@ var testData0 = ["pzhoccuf","pzhoccuf","pzhoccuf","pzhoccuf","pzhoccuf","pzhoccu
 var testData1 = ["class1","class2"];
 var testData2 = ["class1","class2","class2"];
 
+var frequencyDesc = ['wwwwww','qqqqqq','qwerty','abpbqk','fmjheujd','dlmwpok','errsvm','fmebynk']
+
 /**
  *  Здесь мы тестируем функцию counts:
  *  - Возвращает объект
@@ -30,6 +32,8 @@ describe ('Тест промежуточного объекта', function () {
 		assert.equal( obj['ayptks'], 15 );
 		assert.equal( obj['bnxbkxkh'], 10 );
 		assert.equal( obj['eiiqcivw'], 9 );
+		assert.equal( obj['qwerty'], 33 );
+		assert.equal( obj['qqqqqq'], 54 );
 		assert.equal( obj['wwwwww'], 130 );
 		done();
 	});
@@ -39,16 +43,17 @@ describe ('Тест промежуточного объекта', function () {
  *  Здесь мы тестируем основную функцию obfuscator:
  *  - Возвращает объект
  *  - список ключей соответствует исходному массиву
- *  // todo: - для самых частых ключей длина минимальна
- *  // todo: - по мере увеличения частоты вхождений длина обфусцированного класса не увеличивается
- *  // todo: - ни один обфусцированный класс не начинается с символа, отличного от латинской буквы
+ *  - для самых частых ключей длина минимальна
+ *  - по мере уменьшения частоты использования класса длина обфусцированного класса не уменьшается
+ *  - ни один обфусцированный класс не начинается с символа, отличного от латинской буквы
  */
 describe ('Тест основного функционала', function () {
 	it ('Пустое', function (done) {
 		assert.deepEqual(obfuscator([]), {});
 		done();
 	});
-	
+
+	//**************************************************************************************************************
 	describe ('список ключей соответствует исходному массиву', function () {
 		it ('тестирование проверочной функции', function (done) {
 			assert.equal(eachKeyExistsInObj([], obfuscator([])), true);
@@ -64,6 +69,39 @@ describe ('Тест основного функционала', function () {
 		});
 	});
 
+	//**************************************************************************************************************
+	describe ('для самых частых ключей длина минимальна', function () {
+		var obj = obfuscator(testData0);
+
+		it ('wwwwww', function (done) {
+			assert.equal(('' + obfuscator(testData0)['wwwwww']).length, 1);
+			done();
+		});
+		it ('qqqqqq', function (done) {
+			assert.equal(('' + obfuscator(testData0)['qwerty']).length, 1);
+			done();
+		});
+		it ('qwerty', function (done) {
+			assert.equal(('' + obfuscator(testData0)['qwerty']).length, 1);
+			done();
+		});
+	});
+
+	//**************************************************************************************************************
+	describe ('по мере уменьшения частоты использования класса длина обфусцированного класса не уменьшается', function () {
+		it ('тестирование проверочной функции', function (done) {
+			assert.equal(checkLengthTrend(['aaa','bbb'], {'aaa': 'a', 'bbb': 'bb'}), true);
+			assert.equal(checkLengthTrend(['aaa','bbb','ccc'], {'aaa': 'a', 'bbb': 'bb', 'ccc': 'c'}), false);
+			done();
+		});
+
+		it ('Собственно тестирование', function (done) {
+			assert.equal(checkLengthTrend(frequencyDesc, obfuscator(testData0)), true);
+			done();
+		});
+	});
+
+	//**************************************************************************************************************
 	describe ('ни один обфусцированный класс не начинается с символа, отличного от латинской буквы', function () {
 		it ('тестирование проверочной функции', function (done) {
 			assert.equal(eachValueStartsWithChar({'aaa': 'bbb', 'ccc': 'ddd'}), true);
@@ -101,6 +139,26 @@ function eachValueStartsWithChar(obj) {
 	var pattern=/^[a-z]/;
 	for (var key in obj) {
 		if (('' + obj[key]).match(pattern) == null) return false;
+	}
+	return true;
+}
+
+/**
+ * Проверяет последовательное увеличение (неуменьшение) длины обфусцированного класса
+ * по мере уменьшения его встречаемости
+ *
+ * @param {Array} frequencyArr – массив CSS классов, упорядочен по мере уменьшения частоты использования
+ * @param {Object} obj — хэш; ключи — имена исходных классов, значения — обфусцированные имена
+ * @return {Boolean} — true, если при переборке упорядоченного массива длина классов не уменьшалась, иначе false
+ *
+ */
+function checkLengthTrend(frequencyArr, obj) {
+	var oldLength = 0, currentLength;
+
+	for (var i = 0; i < frequencyArr.length; i++) {
+		currentLength = obj[frequencyArr[i]].length;
+		if (currentLength < oldLength) return false;
+		oldLength = currentLength;
 	}
 	return true;
 }
