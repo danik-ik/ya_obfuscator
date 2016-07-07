@@ -7,8 +7,13 @@
  */
 
 module.exports = function(data) {
-	return {
-		class1: 'a',
-		class2: 'b'
+	var result = {};
+
+	for (var i = 0; i < data.length; i++) {
+		var current = data[i];
+		if (result[current] === undefined) result[current] = 0;
+		result[current]++;
 	}
+
+	return result;
 };

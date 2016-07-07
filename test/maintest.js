@@ -9,7 +9,7 @@ var testData2 = ["class1","class2","class2"];
 
 describe ('Самый главный тест', function () {
 
-	it('Проверка заглушки', function(done) {
+	it('Проверка основного функционала', function(done) {
 		assert.deepEqual(ob(testData1), {class1: '1',class2: '1'});
 		assert.deepEqual(ob(testData2), {class1: '1',class2: '2'});
 		done();
