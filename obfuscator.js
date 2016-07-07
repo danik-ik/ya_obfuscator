@@ -55,12 +55,40 @@ function counts(data) {
 };
 
 /**
+ *
+ *
  * Преобразует число в обфусцированное имя
  *
- * @param {number} i – исходное число
+ *
+ *
+ * @param {number} num – исходное число
+ *
  * @return {string} — обфусцированное имя.
  *
+ *
  */
-function generateNewName(i) {
-	return i.toString();
+
+function generateNewName(num) {
+	var LETTERS =
+			['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+				'0','1','2','3','4','5','6','7','8','9','-','_'];
+
+	// Сначала преобразуем число num в число с основанием 26 в младшем разряде и 38 в старших.
+	// Представим его в качестве массива.
+
+	midArr = [];
+	(function nextDigit(base, number) {
+		midArr.push(number % base);
+		if (number >= base)
+			nextDigit(38, Math.floor(Math.floor(number / base)));
+	})(26, num);
+
+	// потом переведём полученную последовательность в строку через массив LETTERS.
+	// Порядок разрядов -- обратный, это нам на руку: в первом символе не будет ничего, кроме букв
+
+	var result = '';
+	for (var i = 0; i < midArr.length; i++) {
+		result += LETTERS[midArr[i]];
+	}
+	return result;
 }
