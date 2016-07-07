@@ -4,9 +4,14 @@
 var assert = require('assert');
 var ob = require('../obfuscator');
 
+var testData1 = ["class1","class2"];
+var testData2 = ["class1","class2","class2"];
+
 describe ('Самый главный тест', function () {
+
 	it('Проверка заглушки', function(done) {
-		assert.deepEqual(ob(), {class1: 'a',class2: 'b'});
+		assert.deepEqual(ob(testData1), {class1: '1',class2: '1'});
+		assert.deepEqual(ob(testData2), {class1: '1',class2: '2'});
 		done();
 	});
 })
