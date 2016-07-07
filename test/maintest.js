@@ -157,7 +157,10 @@ describe ('Тест основного функционала', function () {
 			done();
 		});
 	});
-
+	var obj = obfuscator(testData0);
+	for (var key in obj) {
+		console.log(key + '=' + obj[key]);
+	}
 });
 
 function objSumm(obj) {
