@@ -49,16 +49,38 @@ describe ('Тест основного функционала', function () {
 		done();
 	});
 	
-	it ('список ключей соответствует исходному массиву', function (done) {
-		// Минимальное тестирование функции проверки
-		assert.equal(eachKeyExistsInObj([], obfuscator([])), true);
-		assert.equal(eachKeyExistsInObj(['asdasdfasd'], obfuscator(['ddfghdfgh'])), false);
+	describe ('список ключей соответствует исходному массиву', function () {
+		it ('тестирование проверочной функции', function (done) {
+			assert.equal(eachKeyExistsInObj([], obfuscator([])), true);
+			assert.equal(eachKeyExistsInObj(['asdasdfasd'], obfuscator(['ddfghdfgh'])), false);
+			done();
+		});
 
-		assert.equal(eachKeyExistsInObj(testData1, obfuscator(testData1)), true);
-		assert.equal(eachKeyExistsInObj(testData2, obfuscator(testData2)), true);
-		assert.equal(eachKeyExistsInObj(testData0, obfuscator(testData0)), true);
-		done();
+		it ('Собственно тестирование', function (done) {
+			assert.equal(eachKeyExistsInObj(testData1, obfuscator(testData1)), true);
+			assert.equal(eachKeyExistsInObj(testData2, obfuscator(testData2)), true);
+			assert.equal(eachKeyExistsInObj(testData0, obfuscator(testData0)), true);
+			done();
+		});
 	});
+
+	describe ('ни один обфусцированный класс не начинается с символа, отличного от латинской буквы', function () {
+		it ('тестирование проверочной функции', function (done) {
+			assert.equal(eachValueStartsWithChar({'aaa': 'bbb', 'ccc': 'ddd'}), true);
+			assert.equal(eachValueStartsWithChar({'aaa': 'bbb', 'ccc': '0ddd'}), false);
+			assert.equal(eachValueStartsWithChar({'aaa': 'bbb', 'ccc': '-ddd'}), false);
+			assert.equal(eachValueStartsWithChar({'aaa': 'bbb', 'ccc': '_ddd'}), false);
+			done()
+		});
+
+		it ('Собственно тестирование', function (done) {
+			assert.equal(eachValueStartsWithChar(obfuscator(testData1)), true);
+			assert.equal(eachValueStartsWithChar(obfuscator(testData2)), true);
+			assert.equal(eachValueStartsWithChar(obfuscator(testData0)), true);
+			done();
+		});
+	});
+
 });
 
 function objSumm(obj) {
@@ -72,6 +94,13 @@ function objSumm(obj) {
 function eachKeyExistsInObj(keys, obj) {
 	for (var i = 0; i < keys.length; i++) {
 		if (obj[keys[i]] === undefined) return false;
+	}
+	return true;
+}
+function eachValueStartsWithChar(obj) {
+	var pattern=/^[a-z]/;
+	for (var key in obj) {
+		if (('' + obj[key]).match(pattern) == null) return false;
 	}
 	return true;
 }
