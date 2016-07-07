@@ -46,7 +46,8 @@ describe ('Тест промежуточного объекта', function () {
  *  - для самых частых ключей длина минимальна
  *  - по мере уменьшения частоты использования класса длина обфусцированного класса не уменьшается
  *  - ни один обфусцированный класс не начинается с символа, отличного от латинской буквы
- *  // todo:- нету повторяющихся обфусцированных классов
+ *  - нету повторяющихся обфусцированных классов
+ *  // todo: - Все обфусцированные классы соответствуют шаблону
  */
 describe ('Тест основного функционала', function () {
 	it ('Пустое', function (done) {
@@ -120,6 +121,22 @@ describe ('Тест основного функционала', function () {
 		});
 	});
 
+	//**************************************************************************************************************
+	describe ('нету повторяющихся обфусцированных классов', function () {
+		it ('тестирование проверочной функции', function (done) {
+			assert.equal(checkNoDuplicates({}), true);
+			assert.equal(checkNoDuplicates({'a': 'a', 'b': 'b', 'c': 'c'}), true);
+			assert.equal(checkNoDuplicates({'a': 'a', 'b': 'b', 'c': 'a'}), false);
+			done();
+		});
+
+		it ('Собственно тестирование', function (done) {
+			assert.equal(checkNoDuplicates(obfuscator(testData1)), true);
+
+			done();
+		});
+	});
+
 });
 
 function objSumm(obj) {
@@ -160,6 +177,24 @@ function checkLengthTrend(frequencyArr, obj) {
 		currentLength = obj[frequencyArr[i]].length;
 		if (currentLength < oldLength) return false;
 		oldLength = currentLength;
+	}
+	return true;
+}
+
+/**
+ * Проверяет неповторяемость обфусцированного класса
+ *
+ * @param {Object} obj — хэш; ключи — имена исходных классов, значения — обфусцированные имена
+ * @return {Boolean} — true, обфусцированные имена не повторялись, иначе false
+ *
+ */
+function checkNoDuplicates(obj) {
+	var testObj = {}
+
+	for (var key in obj) {
+		var obfuscatedClass = obj[key];
+		if (testObj[obfuscatedClass]) return false;
+		testObj[obfuscatedClass] = true;
 	}
 	return true;
 }
